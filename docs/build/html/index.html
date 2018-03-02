@@ -1,0 +1,235 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Autonomie Winscop : Documentation &#8212; Winscop Autonomie 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="autonomie-winscop-documentation">
+<h1>Autonomie Winscop : Documentation<a class="headerlink" href="#autonomie-winscop-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>Ce package fournit l’outillage nécessaire pour générer des fichiers CSV
+depuis les données de gestion sociale d’une base de données Winscop.</p>
+<p>Les fichiers csv générés sont ensuite importable dans la gestion sociale
+Autonomie.</p>
+<p>Les outils suivants sont utilisés</p>
+<blockquote>
+<div><p>sqlautogen</p>
+<blockquote>
+<div>Utilisé pour la génération des modèles SQLAlchemy depuis une base de
+données existantes.</div></blockquote>
+<p>SQLAlchemy</p>
+<blockquote>
+<div>Pour la description des modèles de données Winscop</div></blockquote>
+<p>sqla_inspect</p>
+<blockquote>
+<div>Pour la génération des fichiers csv depuis les modèles, permet la
+translation et le formattage des données</div></blockquote>
+<p>docker</p>
+<blockquote>
+<div>Pour la génération automatique des fichiers csv depuis le fichier
+sql</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="preparation-des-donnees">
+<h1>Préparation des données<a class="headerlink" href="#preparation-des-donnees" title="Permalink to this headline">¶</a></h1>
+<p>Depuis un dump SQL de la base de données Winscop</p>
+<ul class="simple">
+<li>S’assurer que la seule base de données présentes dans le fichier se nomme
+‘winscop’ (les scripts docker se base sur ce nom)</li>
+</ul>
+<p>Placer le fichier sql dans un répertoire de travail</p>
+<p>Pour la suite, nous utiliserons /tmp/winscop_datas/</p>
+</div>
+<div class="section" id="generation-des-fichiers-csv">
+<h1>Génération des fichiers CSV<a class="headerlink" href="#generation-des-fichiers-csv" title="Permalink to this headline">¶</a></h1>
+<p>Une fois vos données préparées, vous pouvez générer les fichiers csv.</p>
+<div class="section" id="telechargement-de-autonomie-winscop">
+<h2>Téléchargement de autonomie_winscop<a class="headerlink" href="#telechargement-de-autonomie-winscop" title="Permalink to this headline">¶</a></h2>
+<p>On va télécharger le logiciel à la racine du home de l’utilisateur courant</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd ~/</span>
+<span class="go">git clone https://github.com/CroissanceCommune/autonomie_winscop</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installation-de-docker">
+<h2>Installation de docker<a class="headerlink" href="#installation-de-docker" title="Permalink to this headline">¶</a></h2>
+<p>Sur les distributions basées sur Debian (Ubuntu, Linux Mint …)</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">apt-get install docker-io</span>
+</pre></div>
+</div>
+<p>Sur les distributions utilisant dnf (CentOS, Fedora, RedHat)</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">dnf install docker-io</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generer-l-image-docker">
+<h2>Générer l’image docker<a class="headerlink" href="#generer-l-image-docker" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">docker build -t winautonomie ~/autonomie_winscop/docker/</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generer-les-fichiers-csv">
+<h2>Générer les fichiers csv<a class="headerlink" href="#generer-les-fichiers-csv" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">docker run -t -i -v ~/autonomie_winscop:/mnt/winautonomie \</span>
+<span class="go">-v /tmp/winscop_datas:/mnt/autonomie winautonomie</span>
+</pre></div>
+</div>
+<p>Les fichiers csv sont alors disponibles dans le répertoire
+/tmp/winscop_datas/processed.</p>
+</div>
+<div class="section" id="quelques-commandes-docker">
+<h2>Quelques commandes Docker<a class="headerlink" href="#quelques-commandes-docker" title="Permalink to this headline">¶</a></h2>
+<p>Lister les containers (instances qui tournent)</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">docker ps -a</span>
+</pre></div>
+</div>
+<p>Lister les images docker</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">docker images</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="personnalisation-de-la-generation-csv">
+<h1>Personnalisation de la génération CSV<a class="headerlink" href="#personnalisation-de-la-generation-csv" title="Permalink to this headline">¶</a></h1>
+<p>Dans le répertoire /tmp/winscop_datas/, ajouter un fichier custom.py et fournir
+un dictionnaire EXPORTS personnalisé :</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># -*- coding:utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">autonomie_winscop.models</span> <span class="kn">import</span> <span class="n">MyModel</span>
+
+<span class="k">def</span> <span class="nf">format_mymodel_datas</span><span class="p">(</span><span class="n">csv_filepath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction permettant le post-formattage des données dans le fichier csv</span>
+
+<span class="sd">    Il est possible de lire le fichier, modifier les valeurs et le réécrire</span>
+<span class="sd">    ou effectuer toute autre opération (envoi de mail si on veut changer des</span>
+<span class="sd">    mots de passe à la volée ...)</span>
+
+<span class="sd">    :param str csv_filepath: Le chemin sur disque vers le fichier csv</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="n">EXPORTS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;porteurcustom&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="s1">&#39;porteurs_custom.csv&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">MyModel</span><span class="p">,</span>
+        <span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">...</span><span class="p">)],</span>
+        <span class="s1">&#39;formatters&#39;</span><span class="p">:</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Vous pouvez vous inspirer de la configuration dans autonomie_winscop/config.py.</p>
+</div>
+<div class="section" id="import-csv">
+<h1>Import csv<a class="headerlink" href="#import-csv" title="Permalink to this headline">¶</a></h1>
+<p>Pour importer les fichiers csv, utilisez le module d’import dans l’onglet
+Gestion sociale d’Autonomie.</p>
+<p>Les fichiers peuvent être importés un par un.
+Ils contiennent tous l’identifiant winscop des entrées porteurs de projet.</p>
+<p>Par défaut celui-ci est importé comme “Identifiant externe”.
+Il peut donc être utilisé dans les imports successifs comme champ permettant la
+correspondance entre les éléments.</p>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Winscop Autonomie</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Gaston@majerti.fr.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
